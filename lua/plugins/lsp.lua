@@ -38,6 +38,9 @@ return {
       capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
       local servers = {
         ts_ls = {},
+        html = {},
+        cssls = {},
+        tailwindcss = {},
         lua_ls = {
           settings = {
             Lua = {
@@ -52,7 +55,7 @@ return {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         "stylua", -- Used to format Lua code
-        "prettier",
+        "prettierd",
       })
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
       require("mason-lspconfig").setup({
@@ -103,7 +106,8 @@ return {
       end,
       formatters_by_ft = {
         lua = { "stylua" },
-        typescript = { "prettier" },
+        typescript = { "prettierd" },
+        typescriptreact = { "prettierd" },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
