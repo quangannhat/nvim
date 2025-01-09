@@ -14,9 +14,6 @@ return {
         harpoon.ui:toggle_quick_menu(harpoon:list())
       end)
 
-      vim.keymap.set("n", prefix_key .. "1", function()
-        harpoon:list():select(1)
-      end)
       for i = 1, 5 do
         vim.keymap.set("n", prefix_key .. i, function()
           harpoon:list():select(i)
