@@ -38,7 +38,9 @@ return {
       capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
       local servers = {
         ts_ls = {},
-        html = {},
+        html = {
+          filetypes = { "html", "blade", "php" },
+        },
         cssls = {},
         tailwindcss = {},
         lua_ls = {
@@ -56,6 +58,7 @@ return {
       vim.list_extend(ensure_installed, {
         "stylua", -- Used to format Lua code
         "prettierd",
+        "blade-formatter",
       })
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
       require("mason-lspconfig").setup({
@@ -108,6 +111,7 @@ return {
         lua = { "stylua" },
         typescript = { "prettierd" },
         typescriptreact = { "prettierd" },
+        blade = { "blade-formatter" },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
