@@ -42,7 +42,9 @@ return {
           filetypes = { "html", "blade", "php" },
         },
         cssls = {},
-        tailwindcss = {},
+        tailwindcss = {
+          filetypes = { "html", "blade", "php", "typescriptreact" },
+        },
         lua_ls = {
           settings = {
             Lua = {
@@ -57,7 +59,7 @@ return {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         "stylua", -- Used to format Lua code
-        "prettierd",
+        "prettier",
       })
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
       require("mason-lspconfig").setup({
@@ -108,13 +110,14 @@ return {
       end,
       formatters_by_ft = {
         lua = { "stylua" },
-        typescript = { "prettierd" },
-        typescriptreact = { "prettierd" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        blade = { "blade-formatter" },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        -- javascript = { "prettier", "prettier", stop_after_first = true },
       },
     },
   },

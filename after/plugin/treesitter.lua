@@ -8,3 +8,13 @@ list.blade = {
   },
   filetype = "blade",
 }
+
+vim.api.nvim_create_autocmd({
+  "BufNewFile",
+  "BufRead",
+}, {
+  pattern = "*.blade.php",
+  callback = function()
+    vim.opt.filetype = "html"
+  end,
+})
