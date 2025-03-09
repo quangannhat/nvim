@@ -26,9 +26,9 @@ opt.timeoutlen = 300
 opt.scrolloff = 10
 
 -- sync with system's clipboard
-vim.schedule(function()
-  vim.opt.clipboard = "unnamedplus"
-end)
+-- vim.schedule(function()
+--   vim.opt.clipboard = "unnamedplus"
+-- end)
 
 --Leader key, key mapping
 vim.g.mapleader = " "
@@ -65,3 +65,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank()
   end,
 })
+
+keymap.set("n", "<leader>y", '<cmd>"+y<CR>')
