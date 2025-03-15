@@ -58,6 +58,8 @@ keymap.set("n", "N", "Nzzzv")
 keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
+keymap.set("v", "<leader>y", '"+y')
+
 --Highlight when yank
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",
@@ -65,5 +67,3 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank()
   end,
 })
-
-keymap.set("n", "<leader>y", '<cmd>"+y<CR>')
