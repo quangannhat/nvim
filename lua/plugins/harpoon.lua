@@ -22,7 +22,7 @@ return {
         vim.keymap.set("n", "<F" .. i .. ">", function()
           local entry = harpoon:list():get(i)
           if not entry then
-            fidget.notify("No files attached to slot" .. i, nil, {
+            fidget.notify("No files attached to slot " .. i, nil, {
               ttl = 1,
             })
           end
