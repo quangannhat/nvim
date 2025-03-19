@@ -6,8 +6,12 @@ return {
     config = function()
       local harpoon = require("harpoon")
       harpoon:setup()
+      local fidget = require("fidget")
       vim.keymap.set("n", "<C-h>", function()
-        print("Added a file to harpoon")
+        local file_name = vim.fn.expand("%:t")
+        fidget.notify("Added " .. file_name .. " to harpoon", nil, {
+          ttl = 1,
+        })
         harpoon:list():add()
       end)
       vim.keymap.set("n", "<C-M-h>", function()
@@ -16,6 +20,12 @@ return {
 
       for i = 1, 5 do
         vim.keymap.set("n", "<F" .. i .. ">", function()
+          local entry = harpoon:list():get(i)
+          if not entry then
+            fidget.notify("No files attached to slot" .. i, nil, {
+              ttl = 1,
+            })
+          end
           harpoon:list():select(i)
         end)
       end
