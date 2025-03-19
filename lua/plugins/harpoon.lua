@@ -15,7 +15,7 @@ return {
       end)
 
       for i = 1, 5 do
-        vim.keymap.set("n", "<C-" .. i .. ">", function()
+        vim.keymap.set("n", "<F" .. i .. ">", function()
           harpoon:list():select(i)
         end)
       end
