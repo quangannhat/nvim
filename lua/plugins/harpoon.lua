@@ -7,7 +7,7 @@ return {
       local harpoon = require("harpoon")
       harpoon:setup()
       local fidget = require("fidget")
-      vim.keymap.set("n", "<C-h>", function()
+      vim.keymap.set("n", "<C-M-a>", function()
         local file_name = vim.fn.expand("%:t")
         fidget.notify("Added " .. file_name .. " to harpoon", nil, {
           ttl = 1,

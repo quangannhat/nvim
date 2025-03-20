@@ -18,3 +18,9 @@ tab_width = 4
 [{Makefile,**/Makefile,runtime/doc/*.txt}]
 indent_style = tab
 indent_size = 8
+
+[*.css]
+tab_width = 4
+
+[*.json]
+tab_width = 4
