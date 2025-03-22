@@ -21,7 +21,7 @@ opt.signcolumn = "yes"
 
 opt.updatetime = 100
 
-opt.timeoutlen = 300
+opt.timeoutlen = 3000
 
 opt.scrolloff = 10
 
