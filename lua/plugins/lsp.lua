@@ -29,7 +29,11 @@ return {
           map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
           map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
           map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
-          map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+          map("<leader>rn", function()
+            vim.ui.input({
+              prompt = "New name:",
+            }, vim.lsp.buf.rename)
+          end, "[R]e[n]ame")
           map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
           map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
         end,
@@ -233,6 +237,16 @@ return {
           { name = "luasnip" },
           { name = "path" },
         },
+      })
+    end,
+  },
+  {
+    "maan2003/lsp_lines.nvim",
+    config = function()
+      require("lsp_lines").setup()
+      -- Disable virtual_text since it's redundant due to lsp_lines.
+      vim.diagnostic.config({
+        virtual_text = false,
       })
     end,
   },
