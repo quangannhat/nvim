@@ -25,6 +25,8 @@ opt.timeoutlen = 3000
 
 opt.scrolloff = 10
 
+opt.swapfile = false
+
 -- sync with system's clipboard
 -- vim.schedule(function()
 --   vim.opt.clipboard = "unnamedplus"
@@ -64,10 +66,26 @@ keymap.set("v", "<leader>y", '"+y')
 keymap.set("n", "<C-M-j>", "<cmd>:cnext<CR>")
 keymap.set("n", "<C-M-k>", "<cmd>:cprev<CR>")
 
+--Auto increment
+keymap.set("v", "<leader>a", "g<C-a>", { silent = true })
+
 --Highlight when yank
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",
   callback = function()
     vim.highlight.on_yank()
   end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "typescriptreact", -- filetype for .tsx
+  callback = function()
+    local macros = require("macros.tsx")
+    vim.fn.setreg("r", macros.remove_wrapper)
+
+    vim.fn.setreg("p", macros.export_default)
+
+    vim.fn.setreg("a", macros.add_wrapper)
+  end,
+  once = true,
 })
