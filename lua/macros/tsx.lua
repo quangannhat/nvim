@@ -6,6 +6,6 @@ M.export_default = [[iexport default function () {
 
 M.remove_wrapper = [[ma%dd'addww]]
 
-M.add_wrapper = [[maO<div>lDj%op f%ee]]
+M.add_wrapper = [[O<div>lDj_w%op f%ee]]
 
 return M
