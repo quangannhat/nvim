@@ -89,3 +89,11 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   once = true,
 })
+
+vim.keymap.set("n", "<leader>df", function()
+  vim.diagnostic.open_float({
+    focusable = true,
+    border = "rounded",
+    scope = "line",
+  })
+end, { desc = "Open diagnostic float" })
