@@ -97,3 +97,17 @@ vim.keymap.set("n", "<leader>df", function()
     scope = "line",
   })
 end, { desc = "Open diagnostic float" })
+
+vim.api.nvim_create_user_command("FormatJSON", function()
+  -- Save the cursor position
+  local cursor_pos = vim.fn.getcurpos()
+
+  -- Format the entire buffer using gojq
+  vim.cmd("%!gojq .")
+
+  -- Restore cursor position
+  vim.fn.setpos(".", cursor_pos)
+
+  -- Provide feedback
+  vim.notify("File formatted with gojq", vim.log.levels.INFO)
+end, {})
