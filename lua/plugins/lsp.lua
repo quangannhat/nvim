@@ -40,14 +40,28 @@ return {
       })
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+      local mason_registry = require("mason-registry")
+      local vue_ls = mason_registry.get_package("vue-language-server"):get_install_path()
+        .. "/node_modules/@vue/language-server"
       local servers = {
-        ts_ls = {},
+        ts_ls = {
+          filetypes = { "typescriptreact", "astro", "typescript", "vue" },
+          init_options = {
+            plugins = {
+              {
+                name = "@vue/typescript-plugin",
+                location = vue_ls,
+                languages = { "vue" },
+              },
+            },
+          },
+        },
         html = {
           filetypes = { "html", "blade", "php" },
         },
         cssls = {},
         tailwindcss = {
-          filetypes = { "html", "blade", "php", "typescriptreact" },
+          filetypes = { "html", "blade", "php", "typescriptreact", "astro" },
         },
         lua_ls = {
           settings = {
@@ -116,6 +130,7 @@ return {
         lua = { "stylua" },
         typescript = { "prettier" },
         typescriptreact = { "prettier" },
+        astro = { "prettier" },
         blade = { "blade-formatter" },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },

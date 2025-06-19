@@ -16,15 +16,6 @@ return {
           require("telescope.themes").get_dropdown(),
         },
       },
-      pickers = {
-        buffers = {
-          mappings = {
-            i = {
-              ["<c-d>"] = "delete_buffer", -- Ctrl+d to delete in insert mode
-            },
-          },
-        },
-      },
     })
     require("telescope").load_extension("fzf")
     require("telescope").load_extension("ui-select")
@@ -43,7 +34,7 @@ return {
     vim.keymap.set("n", "<leader>/", function()
       -- You can pass additional configuration to Telescope to change the theme, layout, etc.
       builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-        winblend = 10,
+        winblend = 30,
         previewer = false,
       }))
     end, { desc = "[/] Fuzzily search in current buffer" })
