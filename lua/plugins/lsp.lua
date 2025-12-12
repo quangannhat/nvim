@@ -45,7 +45,7 @@ return {
         .. "/node_modules/@vue/language-server"
       local servers = {
         ts_ls = {
-          filetypes = { "typescriptreact", "astro", "typescript", "vue" },
+          filetypes = { "typescriptreact", "astro", "typescript", "vue", "javascript", "javascriptreact" },
           init_options = {
             plugins = {
               {
@@ -61,7 +61,7 @@ return {
         },
         cssls = {},
         tailwindcss = {
-          filetypes = { "html", "blade", "php", "typescriptreact", "astro" },
+          filetypes = { "html", "blade", "php", "typescriptreact", "astro", "vue" },
         },
         lua_ls = {
           settings = {
@@ -181,6 +181,13 @@ return {
       local cmp = require("cmp")
       local luasnip = require("luasnip")
       luasnip.config.setup({})
+
+      cmp.setup.filetype({ "sql", "mysql" }, {
+        sources = {
+          { name = "vim-dadbod-completion" },
+          { name = "buffer" },
+        },
+      })
 
       cmp.setup({
         snippet = {
