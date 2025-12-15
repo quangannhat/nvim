@@ -57,7 +57,7 @@ return {
           },
         },
         html = {
-          filetypes = { "html", "blade", "php" },
+          filetypes = { "html", "php" },
         },
         cssls = {},
         tailwindcss = {
@@ -131,7 +131,6 @@ return {
         typescript = { "prettier" },
         typescriptreact = { "prettier" },
         astro = { "prettier" },
-        blade = { "blade-formatter" },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -160,12 +159,12 @@ return {
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            "rafamadriz/friendly-snippets",
+            config = function()
+              require("luasnip.loaders.from_snipmate").lazy_load()
+            end,
+          },
         },
       },
       "saadparwaiz1/cmp_luasnip",
