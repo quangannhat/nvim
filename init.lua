@@ -132,6 +132,7 @@ vim.pack.add({
     version = vim.version.range("1.*"),
   },
   "https://github.com/L3MON4D3/LuaSnip",
+  "https://github.com/stevearc/oil.nvim",
 })
 
 local function packadd(name)
@@ -143,6 +144,7 @@ packadd("fzf-lua")
 packadd("mini.nvim")
 packadd("gitsigns.nvim")
 packadd("nvim-treesitter")
+packadd("oil.nvim")
 
 --LSP
 packadd("nvim-lspconfig")
@@ -159,6 +161,10 @@ require("nvim-tree").setup({
     group_empty = false,
   },
 })
+
+require("oil").setup()
+
+keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 keymap.set("n", "<leader>e", function()
   require("nvim-tree.api").tree.toggle()
@@ -392,12 +398,16 @@ vim.lsp.config("lua_ls", {
 vim.lsp.config("pyright", {})
 vim.lsp.config("bashls", {})
 vim.lsp.config("ts_ls", {})
+vim.lsp.config("gopls", {})
+vim.lsp.config("json_ls", {})
 
 vim.lsp.enable({
   "lua_ls",
   "pyright",
   "bashls",
   "ts_ls",
+  "gopls",
+  "json_ls",
 })
 
 require("mason").setup({})
@@ -434,3 +444,4 @@ vim.lsp.config["*"] = {
 keymap.set("n", "<leader>fo", function()
   vim.lsp.buf.format()
 end)
+
