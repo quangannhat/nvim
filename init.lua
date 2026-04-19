@@ -399,7 +399,7 @@ vim.lsp.config("pyright", {})
 vim.lsp.config("bashls", {})
 vim.lsp.config("ts_ls", {})
 vim.lsp.config("gopls", {})
-vim.lsp.config("json_ls", {})
+vim.lsp.config("jsonls", {})
 
 vim.lsp.enable({
   "lua_ls",
@@ -407,7 +407,7 @@ vim.lsp.enable({
   "bashls",
   "ts_ls",
   "gopls",
-  "json_ls",
+  "jsonls",
 })
 
 require("mason").setup({})
