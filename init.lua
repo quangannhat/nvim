@@ -133,12 +133,14 @@ vim.pack.add({
   },
   "https://github.com/L3MON4D3/LuaSnip",
   "https://github.com/stevearc/oil.nvim",
+  "https://github.com/stevearc/conform.nvim",
 })
 
 local function packadd(name)
   vim.cmd("packadd " .. name)
 end
 
+packadd("conform.nvim")
 packadd("nvim-tree.lua")
 packadd("fzf-lua")
 packadd("mini.nvim")
@@ -441,7 +443,20 @@ vim.lsp.config["*"] = {
   capabilities = require("blink.cmp").get_lsp_capabilities(),
 }
 
+require("conform").setup({
+  formatters_by_ft = {
+    javascript = { "prettier" },
+    javascriptreact = { "prettier" },
+    typescript = { "prettier" },
+    typescriptreact = { "prettier" },
+    css = { "prettier" },
+    html = { "prettier" },
+    json = { "prettier" },
+    markdown = { "prettier" },
+  },
+})
+
 keymap.set("n", "<leader>fo", function()
-  vim.lsp.buf.format()
+  require("conform").format({ async = true, lsp_fallback = true })
 end)
 
