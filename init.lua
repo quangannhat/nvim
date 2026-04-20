@@ -134,6 +134,7 @@ vim.pack.add({
   "https://github.com/L3MON4D3/LuaSnip",
   "https://github.com/stevearc/oil.nvim",
   "https://github.com/stevearc/conform.nvim",
+  "https://github.com/windwp/nvim-ts-autotag",
 })
 
 local function packadd(name)
@@ -147,6 +148,7 @@ packadd("mini.nvim")
 packadd("gitsigns.nvim")
 packadd("nvim-treesitter")
 packadd("oil.nvim")
+packadd("nvim-ts-autotag")
 
 --LSP
 packadd("nvim-lspconfig")
@@ -165,6 +167,8 @@ require("nvim-tree").setup({
 })
 
 require("oil").setup()
+
+require("nvim-ts-autotag").setup({})
 
 keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
@@ -196,25 +200,21 @@ end)
 
 require("mini.ai").setup({})
 require("mini.comment").setup({})
-require("mini.move").setup({})
 require("mini.surround").setup({})
-require("mini.cursorword").setup({})
 require("mini.indentscope").setup({})
 require("mini.pairs").setup({})
-require("mini.trailspace").setup({})
-require("mini.bufremove").setup({})
 require("mini.notify").setup({})
 require("mini.icons").setup({})
 
 
 require("gitsigns").setup({
   signs = {
-    add = { text = "\u{2590}" },        -- ▏
-    change = { text = "\u{2590}" },     -- ▐
-    delete = { text = "\u{2590}" },     -- ◦
-    topdelete = { text = "\u{25e6}" },  -- ◦
+    add = { text = "\u{2590}" },          -- ▏
+    change = { text = "\u{2590}" },       -- ▐
+    delete = { text = "\u{2590}" },       -- ◦
+    topdelete = { text = "\u{25e6}" },    -- ◦
     changedelete = { text = "\u{25cf}" }, -- ●
-    untracked = { text = "\u{25cb}" },  -- ○
+    untracked = { text = "\u{25cb}" },    -- ○
   },
   signcolumn = true,
   current_line_blame = false,
@@ -402,6 +402,9 @@ vim.lsp.config("bashls", {})
 vim.lsp.config("ts_ls", {})
 vim.lsp.config("gopls", {})
 vim.lsp.config("jsonls", {})
+vim.lsp.config("tailwindcss", {})
+vim.lsp.config("basedpyright", {})
+vim.lsp.config("ruff", {})
 
 vim.lsp.enable({
   "lua_ls",
@@ -410,6 +413,9 @@ vim.lsp.enable({
   "ts_ls",
   "gopls",
   "jsonls",
+  "tailwindcss",
+  "basedpyright",
+  "ruff",
 })
 
 require("mason").setup({})
@@ -459,4 +465,3 @@ require("conform").setup({
 keymap.set("n", "<leader>fo", function()
   require("conform").format({ async = true, lsp_fallback = true })
 end)
-
