@@ -70,6 +70,8 @@ vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position"
 
 keymap.set("v", "<leader>y", '"+y')
 
+keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
+
 --quick fix
 keymap.set("n", "<C-M-j>", "<cmd>:cnext<CR>")
 keymap.set("n", "<C-M-k>", "<cmd>:cprev<CR>")
@@ -113,13 +115,14 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
-require("status_line")
 
 vim.pack.add({
   "https://www.github.com/ibhagwan/fzf-lua",
   "https://www.github.com/nvim-tree/nvim-tree.lua",
   "https://www.github.com/echasnovski/mini.nvim",
   "https://www.github.com/lewis6991/gitsigns.nvim",
+  'https://github.com/nvim-tree/nvim-web-devicons',
+    'https://github.com/nvim-lualine/lualine.nvim',
   {
     src = "https://github.com/nvim-treesitter/nvim-treesitter",
     branch = "main",
@@ -135,6 +138,15 @@ vim.pack.add({
   "https://github.com/stevearc/oil.nvim",
   "https://github.com/stevearc/conform.nvim",
   "https://github.com/windwp/nvim-ts-autotag",
+  {
+    src = 'https://github.com/JavaHello/spring-boot.nvim',
+    version = '218c0c26c14d99feca778e4d13f5ec3e8b1b60f0',
+  },
+  'https://github.com/MunifTanjim/nui.nvim',
+  'https://github.com/mfussenegger/nvim-dap',
+
+  'https://github.com/nvim-java/nvim-java',
+  "https://github.com/akinsho/toggleterm.nvim",
 })
 
 local function packadd(name)
@@ -149,6 +161,8 @@ packadd("gitsigns.nvim")
 packadd("nvim-treesitter")
 packadd("oil.nvim")
 packadd("nvim-ts-autotag")
+packadd("lualine.nvim")
+packadd("toggleterm.nvim")
 
 --LSP
 packadd("nvim-lspconfig")
@@ -167,6 +181,15 @@ require("nvim-tree").setup({
 })
 
 require("oil").setup()
+require("lualine").setup()
+require("toggleterm").setup({
+  direction = "float",
+  float_opts = {
+    border = "curved",
+  },
+})
+
+keymap.set('n', '<leader>tt', '<cmd>ToggleTerm<cr>', { desc = "Toggle terminal" })
 
 require("nvim-ts-autotag").setup({})
 
