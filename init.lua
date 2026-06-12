@@ -76,11 +76,14 @@ keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
 keymap.set("n", "<C-M-j>", "<cmd>:cnext<CR>")
 keymap.set("n", "<C-M-k>", "<cmd>:cprev<CR>")
 
-keymap.set("n", "<leader>pa", function() -- show file path
+local function copy_file_path()
   local path = vim.fn.expand("%:p")
   vim.fn.setreg("+", path)
   print("file:", path)
-end, { desc = "Copy full file path" })
+end
+
+keymap.set("n", "<leader>pa", copy_file_path, { desc = "Copy full file path" })
+vim.api.nvim_create_user_command("CopyFilePath", copy_file_path, {})
 
 keymap.set("n", "<leader>td", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
@@ -147,6 +150,9 @@ vim.pack.add({
 
   'https://github.com/nvim-java/nvim-java',
   "https://github.com/akinsho/toggleterm.nvim",
+  "https://github.com/tpope/vim-dadbod",
+  "https://github.com/kristijanhusak/vim-dadbod-ui",
+  "https://github.com/kristijanhusak/vim-dadbod-completion",
 })
 
 local function packadd(name)
@@ -163,6 +169,18 @@ packadd("oil.nvim")
 packadd("nvim-ts-autotag")
 packadd("lualine.nvim")
 packadd("toggleterm.nvim")
+packadd("vim-dadbod")
+packadd("vim-dadbod-ui")
+packadd("vim-dadbod-completion")
+
+vim.g.dbs = {
+  { name = "arbinxdata_1", url = "postgresql://postgres:arbin@localhost:5432/arbinxdata_1" },
+  { name = "arbinxinfo_1", url = "postgresql://postgres:arbin@localhost:5432/arbinxinfo_1" },
+  { name = "ArbinProfileDatabase", url = "postgresql://postgres:arbin@localhost:5432/ArbinProfileDatabase" },
+  { name = "sqlite_arbinxdata_1", url = "sqlite:///home/quangan/dev/arbin/test-output/sqlite-dbs/InitAllDb_CreatesCoreTablesInEachFile/arbinxdata_1.db" },
+  { name = "sqlite_arbinxinfo_1", url = "sqlite:///home/quangan/dev/arbin/test-output/sqlite-dbs/InitAllDb_CreatesCoreTablesInEachFile/arbinxinfo_1.db" },
+  { name = "sqlite_arbinxmasterinfo", url = "sqlite:///home/quangan/dev/arbin/test-output/sqlite-dbs/InitAllDb_CreatesCoreTablesInEachFile/arbinxmasterinfo.db" },
+}
 
 --LSP
 packadd("nvim-lspconfig")
@@ -220,6 +238,10 @@ end)
 keymap.set("n", "<leader>fX", function()
   require("fzf-lua").diagnostics_workspace()
 end)
+
+keymap.set("n", "<leader>fn", function()
+  require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
+end, { desc = "Find neovim config files" })
 
 require("mini.ai").setup({})
 require("mini.comment").setup({})
@@ -426,8 +448,12 @@ vim.lsp.config("ts_ls", {})
 vim.lsp.config("gopls", {})
 vim.lsp.config("jsonls", {})
 vim.lsp.config("tailwindcss", {})
-vim.lsp.config("basedpyright", {})
+vim.lsp.config("pyright", {})
 vim.lsp.config("ruff", {})
+vim.lsp.config("bashls", {})
+vim.lsp.config("clangd", {})
+vim.lsp.enable('jdtls', {})
+vim.lsp.enable('omnisharp')
 
 vim.lsp.enable({
   "lua_ls",
@@ -437,8 +463,12 @@ vim.lsp.enable({
   "gopls",
   "jsonls",
   "tailwindcss",
-  "basedpyright",
+  "pyright",
   "ruff",
+  "bashls",
+  "clangd",
+  "jdtls",
+  "omnisharp",
 })
 
 require("mason").setup({})
