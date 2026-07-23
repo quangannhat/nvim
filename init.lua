@@ -1,7 +1,5 @@
 local opt = vim.opt
 
-vim.cmd.colorscheme("habamax")
-
 opt.termguicolors = true
 
 opt.number = true
@@ -76,14 +74,29 @@ keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true })
 keymap.set("n", "<C-M-j>", "<cmd>:cnext<CR>")
 keymap.set("n", "<C-M-k>", "<cmd>:cprev<CR>")
 
-local function copy_file_path()
-  local path = vim.fn.expand("%:p")
-  vim.fn.setreg("+", path)
-  print("file:", path)
+local function copy_file_path(opts)
+  local path = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.")
+  local ref
+  if opts and opts.range and opts.range > 0 and opts.line1 ~= opts.line2 then
+    ref = path .. ":" .. opts.line1 .. "-" .. opts.line2
+  else
+    ref = path .. ":" .. vim.fn.line(".")
+  end
+  vim.fn.setreg("+", ref)
+  print("file:", ref)
 end
 
-keymap.set("n", "<leader>pa", copy_file_path, { desc = "Copy full file path" })
-vim.api.nvim_create_user_command("CopyFilePath", copy_file_path, {})
+keymap.set("n", "<leader>pa", copy_file_path, { desc = "Copy file path with line" })
+keymap.set("x", "<leader>pa", function()
+  local l1, l2 = vim.fn.line("v"), vim.fn.line(".")
+  if l1 > l2 then
+    l1, l2 = l2, l1
+  end
+  copy_file_path({ range = 1, line1 = l1, line2 = l2 })
+end, { desc = "Copy file path with line range" })
+vim.api.nvim_create_user_command("CopyFilePath", copy_file_path, { range = true })
+
+keymap.set('n', '<leader>*', [[:%s/\<<C-r><C-w>\>//g<Left><Left>]], { noremap = true })
 
 keymap.set("n", "<leader>td", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
@@ -120,12 +133,13 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 
 vim.pack.add({
+  "https://github.com/catppuccin/nvim",
   "https://www.github.com/ibhagwan/fzf-lua",
   "https://www.github.com/nvim-tree/nvim-tree.lua",
   "https://www.github.com/echasnovski/mini.nvim",
   "https://www.github.com/lewis6991/gitsigns.nvim",
   'https://github.com/nvim-tree/nvim-web-devicons',
-    'https://github.com/nvim-lualine/lualine.nvim',
+  'https://github.com/nvim-lualine/lualine.nvim',
   {
     src = "https://github.com/nvim-treesitter/nvim-treesitter",
     branch = "main",
@@ -147,6 +161,8 @@ vim.pack.add({
   },
   'https://github.com/MunifTanjim/nui.nvim',
   'https://github.com/mfussenegger/nvim-dap',
+  'https://github.com/nvim-neotest/nvim-nio',
+  'https://github.com/rcarriga/nvim-dap-ui',
 
   'https://github.com/nvim-java/nvim-java',
   "https://github.com/akinsho/toggleterm.nvim",
@@ -154,6 +170,8 @@ vim.pack.add({
   "https://github.com/kristijanhusak/vim-dadbod-ui",
   "https://github.com/kristijanhusak/vim-dadbod-completion",
 })
+
+vim.cmd.colorscheme("catppuccin")
 
 local function packadd(name)
   vim.cmd("packadd " .. name)
@@ -174,12 +192,13 @@ packadd("vim-dadbod-ui")
 packadd("vim-dadbod-completion")
 
 vim.g.dbs = {
-  { name = "arbinxdata_1", url = "postgresql://postgres:arbin@localhost:5432/arbinxdata_1" },
-  { name = "arbinxinfo_1", url = "postgresql://postgres:arbin@localhost:5432/arbinxinfo_1" },
-  { name = "ArbinProfileDatabase", url = "postgresql://postgres:arbin@localhost:5432/ArbinProfileDatabase" },
-  { name = "sqlite_arbinxdata_1", url = "sqlite:///home/quangan/dev/arbin/test-output/sqlite-dbs/InitAllDb_CreatesCoreTablesInEachFile/arbinxdata_1.db" },
-  { name = "sqlite_arbinxinfo_1", url = "sqlite:///home/quangan/dev/arbin/test-output/sqlite-dbs/InitAllDb_CreatesCoreTablesInEachFile/arbinxinfo_1.db" },
-  { name = "sqlite_arbinxmasterinfo", url = "sqlite:///home/quangan/dev/arbin/test-output/sqlite-dbs/InitAllDb_CreatesCoreTablesInEachFile/arbinxmasterinfo.db" },
+  { name = "arbinxdata_1",            url = "postgresql://postgres:arbin@localhost:5432/arbinxdata_1" },
+  { name = "arbinxinfo_1",            url = "postgresql://postgres:arbin@localhost:5432/arbinxinfo_1" },
+  { name = "arbin_log_v1",            url = "postgresql://postgres:arbin@localhost:5432/arbin_log_v1" },
+  { name = "arbinxmasterinfo",        url = "postgresql://postgres:arbin@localhost:5432/arbinxmasterinfo" },
+  { name = "ArbinProfileDatabase",    url = "postgresql://postgres:arbin@localhost:5432/ArbinProfileDatabase" },
+  { name = "ArbinTestSimulationDatabase", url = "postgresql://postgres:arbin@localhost:5432/ArbinTestSimulationDatabase" },
+  { name = "sqlite_arbinxdata_1",     url = "sqlite:///home/quangan/dev/arbin/test-output/sqlite-dbs/InitAllDb_CreatesCoreTablesInEachFile/arbinxdata_1.db" },
 }
 
 --LSP
@@ -263,6 +282,11 @@ require("gitsigns").setup({
   },
   signcolumn = true,
   current_line_blame = false,
+})
+
+keymap.set("n", "gt", "<cmd>Gitsigns toggle_current_line_blame<CR>", {
+  desc = "Toggle current line blame",
+  silent = true,
 })
 
 local setup_treesitter = function()
@@ -453,7 +477,7 @@ vim.lsp.config("ruff", {})
 vim.lsp.config("bashls", {})
 vim.lsp.config("clangd", {})
 vim.lsp.enable('jdtls', {})
-vim.lsp.enable('omnisharp')
+vim.lsp.enable('roslyn_ls')
 
 vim.lsp.enable({
   "lua_ls",
@@ -468,7 +492,7 @@ vim.lsp.enable({
   "bashls",
   "clangd",
   "jdtls",
-  "omnisharp",
+  "roslyn_ls",
 })
 
 require("mason").setup({})
@@ -518,3 +542,171 @@ require("conform").setup({
 keymap.set("n", "<leader>fo", function()
   require("conform").format({ async = true, lsp_fallback = true })
 end)
+
+vim.api.nvim_create_user_command("Jq", function(opts)
+  local filter = opts.args ~= "" and opts.args or "."
+  vim.cmd("%" .. "!" .. "jq " .. filter)
+end, { nargs = "?", desc = "Format buffer with jq" })
+
+-- DAP (.NET / netcoredbg)
+packadd("nvim-dap")
+packadd("nvim-nio")
+packadd("nvim-dap-ui")
+
+local dap = require("dap")
+local dapui = require("dapui")
+
+dapui.setup({})
+
+-- Open/close the dap-ui automatically with a session.
+dap.listeners.before.attach.dapui_config = function() dapui.open() end
+dap.listeners.before.launch.dapui_config = function() dapui.open() end
+dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+
+-- netcoredbg (Samsung, OSS) as the .NET DAP adapter. History of what failed:
+--  * vsdbg supports net10 but sends a licensed `handshake` reverse-request that
+--    only Microsoft tooling (VS/VS Code) can answer — nvim-dap can't, so it's
+--    permanently stuck at "Error processing 'initialize' request".
+--  * sharpdbg 0.1.4 is net10-native and needs no handshake, but IGNORES
+--    setExceptionBreakpoints: it halts on every first-chance exception. DAS throws
+--    a torrent of those per request, and sharpdbg then desyncs the CoreCLR
+--    (CORDBG_E_PROCESS_NOT_SYNCHRONIZED) — the session thrashes and never reaches
+--    a real breakpoint. Unusable for DAS.
+--  * The old netcoredbg 3.1.3 (Mason) predates net10 and can't attach.
+-- netcoredbg 3.2.0-1092 (build 2026-06-25, POST net10) attaches to net10 AND
+-- honors exception filters, so DAS's first-chance storm is ignored.
+-- Install: download latest linux-amd64 from github.com/Samsung/netcoredbg/releases
+-- To debug adapter issues: dap.set_log_level("TRACE") and add
+-- "--engineLogging=" .. vim.fn.expand("~/.cache/nvim/netcoredbg.log") to args below.
+dap.set_log_level("TRACE")
+
+dap.adapters.coreclr = {
+  type = "executable",
+  command = vim.fn.expand("~/.local/netcoredbg-latest/netcoredbg/netcoredbg"),
+  args = { "--interpreter=vscode", "--engineLogging=" .. vim.fn.expand("~/.cache/nvim/netcoredbg.log") },
+}
+
+local das_project = "/home/quangan/dev/az/MITS11/DAS/DAS"
+
+-- Build DAS (Debug) before launching so <F5> never debugs a stale dll.
+-- nvim-dap resolves `program` inside a coroutine, so we build asynchronously
+-- (jobstart) and yield/resume rather than blocking with vim.fn.system — a
+-- blocking build pumps the event loop under nvim-dap and corrupts its rpc
+-- coroutine. Erroring here gates the launch on a successful build.
+local function build_das()
+  local co = coroutine.running()
+  vim.notify("Building DAS…", vim.log.levels.INFO)
+  local out = {}
+  local function collect(_, data)
+    if data then vim.list_extend(out, data) end
+  end
+  vim.fn.jobstart({ "dotnet", "build", das_project, "-c", "Debug", "--nologo" }, {
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stdout = collect,
+    on_stderr = collect,
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.notify("DAS build succeeded", vim.log.levels.INFO)
+      else
+        vim.notify("DAS build failed:\n" .. table.concat(out, "\n"), vim.log.levels.ERROR)
+      end
+      coroutine.resume(co, code == 0)
+    end,
+  })
+  if not coroutine.yield() then
+    error("DAS build failed — aborting debug session")
+  end
+end
+
+-- Find the freshly-built DAS dll (Debug build) so we don't have to retype paths.
+local function das_dll()
+  build_das()
+  local hint = das_project .. "/bin/Debug/net10.0/MITS11.DAS.dll"
+  if vim.fn.filereadable(hint) == 1 then
+    return hint
+  end
+  return vim.fn.input("Path to dll: ", das_project .. "/bin/Debug/net10.0/", "file")
+end
+
+dap.configurations.cs = {
+  -- Attach is first so it's the default <F5> choice: a DAS instance is normally
+  -- already running (bun run das:dev), and attach never triggers a build.
+  {
+    type = "coreclr",
+    name = "DAS (attach)",
+    request = "attach",
+    -- Pick the DAS *web server*, excluding the `--workflow-worker` child
+    -- processes (they load the same dll but never run controller code, so
+    -- attaching to one makes breakpoints report frames from unrelated worker
+    -- code — "Invalid cursor line: out of range" and no stepping).
+    processId = function()
+      return require("dap.utils").pick_process({
+        filter = function(proc)
+          return proc.name:find("MITS11.DAS", 1, true)
+            -- and not proc.name:find("--workflow-worker", 1, true)
+        end,
+      })
+    end,
+  },
+  {
+    type = "coreclr",
+    name = "DAS (launch — builds first)",
+    request = "launch",
+    program = das_dll,
+    cwd = "/home/quangan/dev/az/MITS11/DAS/DAS",
+    env = {
+      ASPNETCORE_ENVIRONMENT = "Development",
+    },
+    stopAtEntry = false,
+    -- Run DAS in a terminal buffer (via runInTerminal) so its console output
+    -- (e.g. "[StartupTiming] WebApplication.CreateBuilder()…") goes there and
+    -- doesn't leak into sharpdbg's DAP stream, which corrupts the protocol and
+    -- kills nvim-dap's rpc coroutine ("cannot resume dead coroutine").
+    console = "integratedTerminal",
+  },
+}
+
+-- sharpdbg 0.1.4 stops on *every* first-chance exception and ignores the DAP
+-- exception filter (setExceptionBreakpoints has no effect). DAS throws many
+-- first-chance exceptions during startup, so the session halts on the first one
+-- — in library code with no source ("unavailable location") — and never reaches
+-- your breakpoints. Auto-resume on exception stops so breakpoints are reachable.
+-- Trade-off: you won't break on unhandled exceptions; a crash still terminates
+-- the process and its stack trace shows up in the DAS terminal buffer.
+dap.listeners.after.event_stopped["coreclr_skip_first_chance"] = function(session, body)
+  if body.reason == "exception" then
+    session:request("continue", { threadId = body.threadId }, function() end)
+  end
+end
+
+-- Those first-chance exceptions land in library code with no source, so nvim-dap
+-- emits "Debug adapter stopped at unavailable location" (WARN) on each one before
+-- the listener above resumes. It's cosmetic noise here — drop just that message
+-- while leaving every other nvim-dap notification intact.
+do
+  local dap_utils = require("dap.utils")
+  local orig_notify = dap_utils.notify
+  dap_utils.notify = function(msg, level, opts)
+    if msg == "Debug adapter stopped at unavailable location" then
+      return
+    end
+    return orig_notify(msg, level, opts)
+  end
+end
+
+local dapkeys = {
+  { "<F5>", function() dap.continue() end, "dap continue/start" },
+  { "<F10>", function() dap.step_over() end, "dap step over" },
+  { "<F11>", function() dap.step_into() end, "dap step into" },
+  { "<F12>", function() dap.step_out() end, "dap step out" },
+  { "<leader>db", function() dap.toggle_breakpoint() end, "dap toggle breakpoint" },
+  { "<leader>dB", function() dap.set_breakpoint(vim.fn.input("Condition: ")) end, "dap conditional breakpoint" },
+  { "<leader>dr", function() dap.repl.toggle() end, "dap repl" },
+  { "<leader>du", function() dapui.toggle() end, "dap ui toggle" },
+  { "<leader>dt", function() dap.terminate() end, "dap terminate" },
+}
+for _, m in ipairs(dapkeys) do
+  keymap.set("n", m[1], m[2], { desc = m[3] })
+end
